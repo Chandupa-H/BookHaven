@@ -26,7 +26,6 @@ const BookProductPage = () => {
   const { bookId } = useParams(); // Get bookId from URL params
   const { user, token, isAuthenticated } = useSelector((state) => state.user);
   const books_ = useSelector((state) => state.books.data);
-  console.log(books_);
   const book = books_.find((b) => b.bookId?.toString() === bookId);
 
   const router = useRouter();
@@ -51,7 +50,7 @@ const BookProductPage = () => {
       body: JSON.stringify({
         userId: user.id,
         bookId: book._id,
-        quantity: 1,
+        quantity: quantity,
       }),
     });
 
@@ -110,6 +109,8 @@ const BookProductPage = () => {
     return (sum / ratings.length).toFixed(1);
   };
 
+  console.log(book.discount, book.price);
+
   const averageRating = calculateAverageRating(currentBook.ratings);
 
   // Book images - use the main image from book data and add some placeholder images
@@ -145,11 +146,11 @@ const BookProductPage = () => {
   };
 
   const formatPrice = (price) => {
-    return (price / 100).toFixed(2); // Assuming price is in cents
+    return (price / 1).toFixed(2); // Assuming price is in cents
   };
 
   const calculateDiscountedPrice = (price, discount) => {
-    const originalPrice = price / 100;
+    const originalPrice = price / 1;
     const discountedPrice = originalPrice * (1 - discount / 100);
     return discountedPrice.toFixed(2);
   };
@@ -226,19 +227,15 @@ const BookProductPage = () => {
 
               <div className="flex items-baseline gap-3">
                 <span className="text-3xl font-bold text-gray-900">
-                  $
-                  {calculateDiscountedPrice(
-                    currentBook.price,
-                    currentBook.discount
-                  )}
+                  Rs. {calculateDiscountedPrice(book.price, book.discount)}
                 </span>
-                {currentBook.discount > 0 && (
+                {book.discount > 0 && (
                   <>
                     <span className="text-lg text-gray-500 line-through">
-                      ${formatPrice(currentBook.price)}
+                      Rs. {formatPrice(book.price)}
                     </span>
                     <span className="px-2 py-1 bg-red-100 text-red-800 rounded text-sm font-medium">
-                      {currentBook.discount}% OFF
+                      {book.discount}% OFF
                     </span>
                   </>
                 )}
@@ -266,7 +263,7 @@ const BookProductPage = () => {
                   </button>
                 </div>
 
-                <button
+                {/* <button
                   onClick={() => setIsWishlisted(!isWishlisted)}
                   className={`p-3 rounded-lg border transition-all ${
                     isWishlisted
@@ -274,10 +271,10 @@ const BookProductPage = () => {
                       : "border-gray-300 text-gray-600 hover:bg-gray-50"
                   }`}
                 >
-                  <Heart
+                  {/* <Heart
                     className={`w-5 h-5 ${isWishlisted ? "fill-current" : ""}`}
-                  />
-                </button>
+                  /> *
+                </button> */}
               </div>
 
               <div className="flex flex-col sm:flex-row gap-3">
@@ -293,12 +290,12 @@ const BookProductPage = () => {
                   <ShoppingCart className="w-5 h-5" />
                   Add to Cart
                 </button>
-                <button
+                {/* <button
                   disabled={currentBook.stock === 0}
                   className="flex-1 bg-gray-900 text-white py-3 px-6 rounded-lg font-semibold hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Buy Now
-                </button>
+                </button> */}
               </div>
             </div>
 

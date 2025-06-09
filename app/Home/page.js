@@ -170,11 +170,6 @@ const BookstoreHomepage = () => {
     setFilteredBooks(filtered);
   }, [books_, searchQuery, selectedCategory]);
 
-  console.log("books:", books_);
-  console.log("filtered books:", filteredBooks);
-  console.log("search query:", searchQuery);
-  console.log("selected category:", selectedCategory);
-
   // Handle search from navbar
   const handleSearch = (query) => {
     setSearchQuery(query);
@@ -196,9 +191,33 @@ const BookstoreHomepage = () => {
     return [...new Set(genres)];
   };
 
-  // Get genre counts
+  const categoryImages = [
+    {
+      genre: "Biography",
+      image:
+        "https://i.pinimg.com/736x/8c/4f/55/8c4f554ad7cd0333df8955fd2865527b.jpg",
+    },
+    {
+      genre: "Business",
+      image:
+        "https://i.pinimg.com/736x/78/e7/93/78e79334e50d6a6ca07f6dc3f64711f7.jpg",
+    },
+    {
+      genre: "Self-Help",
+      image:
+        "https://i.pinimg.com/736x/4a/60/03/4a600315785530d74ac56d4f71576b0d.jpg",
+    },
+    {
+      genre: "Children’s",
+      image:
+        "https://i.pinimg.com/736x/eb/88/c4/eb88c4e151ad7de99b21b56c209e7519.jpg",
+    },
+  ];
+
+  // Get genre counts and match image from categoryImages
   const getGenreWithCounts = () => {
     if (!books_ || books_.length === 0) return [];
+
     const genreCounts = {};
     books_.forEach((book) => {
       if (book.genre) {
@@ -207,12 +226,15 @@ const BookstoreHomepage = () => {
     });
 
     return Object.entries(genreCounts)
-      .map(([genre, count]) => ({
-        name: genre,
-        image:
-          "https://w0.peakpx.com/wallpaper/782/815/HD-wallpaper-outrun-ultra-background-for-widescreen-ultrawide-laptop-multi-display-dual-triple-monitor-tablet-smartphone-2736x1824.jpg",
-        count: `${count} book${count !== 1 ? "s" : ""}`,
-      }))
+      .map(([genre, count]) => {
+        // Find the matching category image by genre
+        const category = categoryImages.find((cat) => cat.genre === genre);
+        return {
+          name: genre,
+          image: category ? category.image : null,
+          count: `${count} book${count !== 1 ? "s" : ""}`,
+        };
+      })
       .slice(0, 4);
   };
 
@@ -396,7 +418,13 @@ const BookstoreHomepage = () => {
                     unbeatable prices.
                   </p>
                   <div className="flex space-x-4">
-                    <button className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-8 py-4 rounded-full font-semibold hover:from-yellow-600 hover:to-orange-600 transform hover:scale-105 transition-all duration-200 shadow-xl">
+                    <button
+                      onClick={() => {
+                        // Scroll down 100 pixels smoothly
+                        window.scrollBy({ top: 800, behavior: "smooth" });
+                      }}
+                      className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-8 py-4 rounded-full font-semibold hover:from-yellow-600 hover:to-orange-600 transform hover:scale-105 transition-all duration-200 shadow-xl"
+                    >
                       Shop Now
                     </button>
                     <button className="border-2 border-white text-white px-8 py-4 rounded-full font-semibold hover:bg-white hover:text-gray-900 transition-all duration-200">
@@ -407,7 +435,7 @@ const BookstoreHomepage = () => {
                 <div className="relative">
                   <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-3xl transform rotate-6 opacity-20"></div>
                   <img
-                    src="https://w0.peakpx.com/wallpaper/782/815/HD-wallpaper-outrun-ultra-background-for-widescreen-ultrawide-laptop-multi-display-dual-triple-monitor-tablet-smartphone-2736x1824.jpg"
+                    src="https://i.pinimg.com/736x/35/21/e7/3521e7c885028cb60fee4a8208a779be.jpg"
                     alt="Featured Books"
                     className="relative rounded-3xl shadow-2xl transform hover:scale-105 transition-transform duration-300"
                   />
@@ -471,10 +499,10 @@ const BookstoreHomepage = () => {
                       Most popular books this month
                     </p>
                   </div>
-                  <button className="text-blue-600 hover:text-blue-700 font-semibold flex items-center space-x-2">
+                  {/* <button className="text-blue-600 hover:text-blue-700 font-semibold flex items-center space-x-2">
                     <span>View All</span>
                     <span className="text-lg">→</span>
-                  </button>
+                  </button> */}
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -504,10 +532,10 @@ const BookstoreHomepage = () => {
                       Fresh books just added to our collection
                     </p>
                   </div>
-                  <button className="text-blue-600 hover:text-blue-700 font-semibold flex items-center space-x-2">
+                  {/* <button className="text-blue-600 hover:text-blue-700 font-semibold flex items-center space-x-2">
                     <span>View All</span>
                     <span className="text-lg">→</span>
-                  </button>
+                  </button> */}
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -537,10 +565,10 @@ const BookstoreHomepage = () => {
                       Limited time offers on selected books
                     </p>
                   </div>
-                  <button className="text-red-600 hover:text-red-700 font-semibold flex items-center space-x-2">
+                  {/* <button className="text-red-600 hover:text-red-700 font-semibold flex items-center space-x-2">
                     <span>View All Deals</span>
                     <span className="text-lg">→</span>
-                  </button>
+                  </button> */}
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">

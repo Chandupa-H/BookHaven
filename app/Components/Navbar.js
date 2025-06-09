@@ -6,17 +6,16 @@ import AuthButton from "./AuthButton";
 
 const Navbar = ({ onSearch, onCategoryFilter, selectedCategory }) => {
   const router = useRouter();
-  const [cartItems, setCartItems] = useState(3);
-  const [wishlistItems, setWishlistItems] = useState(2);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [realCategories, setRealCategories] = useState([]);
 
-  // Get books data from Redux store
   const books = useSelector((state) => state.books.data);
   const loading = useSelector((state) => state.books.loading);
 
-  // Extract unique genres from actual book data
+  const cartItems_ = useSelector((state) => state.cart.items);
+  const cartItems = cartItems_ ? cartItems_.length : 0;
+
   useEffect(() => {
     if (books && books.length > 0) {
       const genres = books
@@ -96,20 +95,7 @@ const Navbar = ({ onSearch, onCategoryFilter, selectedCategory }) => {
 
             {/* Right Side Icons */}
             <div className="flex items-center space-x-4">
-              {/* <button className="hidden md:flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition-colors">
-                <span className="text-sm">👤</span>
-                <span>Sign Up</span>
-              </button> */}
               <AuthButton />
-
-              <button className="relative p-2 text-gray-600 hover:text-blue-600 transition-colors">
-                <span className="text-2xl">♡</span>
-                {wishlistItems > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                    {wishlistItems}
-                  </span>
-                )}
-              </button>
 
               <button
                 className="relative p-2 text-gray-600 hover:text-blue-600 transition-colors"
@@ -153,9 +139,13 @@ const Navbar = ({ onSearch, onCategoryFilter, selectedCategory }) => {
                   🔍
                 </button>
               </form>
-              <button className="w-full mt-4 bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700">
+              <button
+                onClick={() => router.push("/auth")}
+                className="w-full mt-4 bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700"
+              >
                 Sign Up
               </button>
+              <AuthButton />
             </div>
           </div>
         )}

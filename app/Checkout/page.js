@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import Navbar from "../Components/Navbar";
 import Footer from "../Components/Footer";
+import { useDispatch, useSelector } from "react-redux";
 
 const CheckoutPage = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -44,33 +45,19 @@ const CheckoutPage = () => {
   const [errors, setErrors] = useState({});
   const [promoCode, setPromoCode] = useState("");
   const [appliedPromo, setAppliedPromo] = useState(null);
+  // const [subtotal, setSubtotal] = useState(0);
 
-  // Sample order data
-  const orderItems = [
-    {
-      id: 1,
-      title: "The Midnight Chronicles",
-      author: "Jennifer Martinez",
-      price: 29.99,
-      quantity: 2,
-      image:
-        "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=100&h=140&fit=crop",
-    },
-    {
-      id: 2,
-      title: "Digital Dreams",
-      author: "Alex Rivera",
-      price: 19.99,
-      quantity: 1,
-      image:
-        "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=100&h=140&fit=crop",
-    },
-  ];
+  const dispatch = useDispatch();
+  const cartItems = useSelector((state) => state.cart.items);
 
-  const subtotal = orderItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
+  const books = useSelector((state) => state.books.data);
+
+  const subtotal = cartItems.reduce((sum, item) => {
+    const book = books.find((b) => b._id === item.book);
+    if (!book) return sum;
+    return sum + item.quantity * book.price;
+  }, 0);
+
   const discount = appliedPromo ? subtotal * (appliedPromo.discount || 0) : 0;
   const shipping =
     formData.shippingMethod === "express"
@@ -148,6 +135,10 @@ const CheckoutPage = () => {
     if (validateStep(currentStep)) {
       setCurrentStep((prev) => Math.min(prev + 1, 3));
     }
+  };
+
+  const setSubFunction = (price) => {
+    setSubtotal((prev) => prev + price);
   };
 
   const handleBack = () => {
@@ -693,31 +684,36 @@ const CheckoutPage = () => {
 
                 {/* Order Items */}
                 <div className="space-y-4 mb-6">
-                  {orderItems.map((item) => (
-                    <div key={item.id} className="flex items-center gap-4">
-                      <div className="w-16 h-20 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
-                        <img
-                          src={item.image}
-                          alt={item.title}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="font-medium text-gray-900 text-sm">
-                          {item.title}
-                        </h3>
-                        <p className="text-gray-600 text-sm">{item.author}</p>
-                        <div className="flex justify-between items-center mt-1">
-                          <span className="text-sm text-gray-600">
-                            Qty: {item.quantity}
-                          </span>
-                          <span className="font-medium text-gray-900">
-                            ${(item.price * item.quantity).toFixed(2)}
-                          </span>
+                  {cartItems.map((item) => {
+                    const book = books.find((b) => b._id === item.book);
+                    // setSubFunction(item.quantity * book.price);
+                    if (!book) return null;
+                    return (
+                      <div key={item._id} className="flex items-center gap-4">
+                        <div className="w-16 h-20 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
+                          <img
+                            src={book.imageLink}
+                            alt={book.title}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="font-medium text-gray-900 text-sm">
+                            {book.title}
+                          </h3>
+                          <p className="text-gray-600 text-sm">{item.author}</p>
+                          <div className="flex justify-between items-center mt-1">
+                            <span className="text-sm text-gray-600">
+                              Qty: {item.quantity}
+                            </span>
+                            <span className="font-medium text-gray-900">
+                              Rs. {(book.price * item.quantity).toFixed(2)}
+                            </span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
 
                 {/* Promo Code */}
@@ -762,29 +758,29 @@ const CheckoutPage = () => {
                 <div className="space-y-3 border-t pt-4">
                   <div className="flex justify-between text-gray-600">
                     <span>Subtotal</span>
-                    <span>${subtotal.toFixed(2)}</span>
+                    <span>Rs. {subtotal.toFixed(2)}</span>
                   </div>
 
                   {discount > 0 && (
                     <div className="flex justify-between text-green-600">
                       <span>Discount</span>
-                      <span>-${discount.toFixed(2)}</span>
+                      <span>-Rs. {discount.toFixed(2)}</span>
                     </div>
                   )}
 
                   <div className="flex justify-between text-gray-600">
                     <span>Shipping</span>
-                    <span>${shipping.toFixed(2)}</span>
+                    <span>Rs. {shipping.toFixed(2)}</span>
                   </div>
 
                   <div className="flex justify-between text-gray-600">
                     <span>Tax</span>
-                    <span>${tax.toFixed(2)}</span>
+                    <span>Rs. {tax.toFixed(2)}</span>
                   </div>
 
                   <div className="flex justify-between items-center text-lg font-semibold text-gray-900 border-t pt-3">
                     <span>Total</span>
-                    <span>${total.toFixed(2)}</span>
+                    <span>Rs. {total.toFixed(2)}</span>
                   </div>
                 </div>
 

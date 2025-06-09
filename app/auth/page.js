@@ -198,10 +198,10 @@ const AuthPages = () => {
         {/* Header */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full mb-4">
-            <BookOpen className="w-8 h-8 text-white" />
+            📚
           </div>
           <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-            BookStore
+            BookHaven
           </h1>
           <p className="text-gray-600 mt-2">
             {isLogin
